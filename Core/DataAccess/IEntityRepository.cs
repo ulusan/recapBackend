@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
-using Entities.Abstract;
+using Core.Entities;
 
-namespace DataAccess.Abstract
+namespace Core.DataAccess
 {
     //CLASS : REFERENS TIP
     //GENERIC CONSTRAINT = GENEL KISITLAMA
@@ -14,9 +14,10 @@ namespace DataAccess.Abstract
     {
 
         List<T> GetAll(Expression<Func<T,bool>>filter=null);
+        T Get(Expression<Func<T, bool>> filter = null);
         void Add(T entity);
         void Update(T entity);
         void Delete(T entity);
-        T GetById(Expression<Func<T, bool>> filter = null);
+        
     }
 }
