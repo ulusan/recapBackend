@@ -6,11 +6,11 @@ using Entities.Concrete;
 
 namespace Business.Abstract
 {
-    public interface IBrandService
+    public interface IColorService
     {
-        IDataResult<List<Brand>> GetAll();
-        IDataResult<Brand>  GetById(int brandId);
-        IResult Add(Brand brand);
+        IDataResult<List<Color>> GetAll();
+        IDataResult<Color> GetById(int colorId);
 
+        IResult Add(Color color);
     }
 }
