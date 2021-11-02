@@ -13,29 +13,29 @@ namespace TestUıiConsole
         {
             CarManager carManager = new CarManager(new EfCarDal());
             //LocalGetCar(carManager);
-            
+
 
             BrandManager brandManager = new BrandManager(new EfBrandDal());
-           //LocalBrandTest(brandManager);
-            
+            //LocalBrandTest(brandManager);
+
 
             ColorManager colorManager = new ColorManager(new EfColorDal());
             //LocalColorTest(colorManager);
-            
+
 
             UserManager userManager = new UserManager(new EfUserDal());
             LocalUserTest(userManager);
-            
+
 
             CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
             //LocalCustomerTest(customerManager);
-            
+
 
             RentalManager rentalManager = new RentalManager(new EfRentalDal());
             //LocalRentalTest(rentalManager);
 
 
-            
+
         }
 
         private static void LocalRentalTest(RentalManager rentalManager)
@@ -68,16 +68,18 @@ namespace TestUıiConsole
             var result = userManager.GetAll();
             if (result.Success)
             {
-                
+
                 Console.WriteLine($"User Info: \n");
                 foreach (var user1 in result.Data)
                 {
-                    
+
                     Console.WriteLine(
                         $"User Id:                {user1.UserId} \n" +
-                        $"User Name:              {user1.FirstName} \n" +
+                        $"User First Name:              {user1.FirstName} \n" +
+                        $"User Last Name:              {user1.LastName} \n" +
                         $"User E-Mail:            {user1.Email}  \n" +
-                        
+                        $"User Password:            {user1.PasswordSalt}  \n" +
+
                         $"--------------------------------");
                 }
                 Console.WriteLine(result.Message);
