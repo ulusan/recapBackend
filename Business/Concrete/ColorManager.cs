@@ -19,7 +19,7 @@ namespace Business.Concrete
         }
         public IDataResult<List<Color>> GetAll()
         {
-            if (DateTime.Now.Hour == 22)
+            if (DateTime.Now.Hour == 23)
             {
                 return new ErrorDataResult<List<Color>>(Messages.MaintenanceTime);
             }
@@ -39,6 +39,16 @@ namespace Business.Concrete
             }
             _colorDal.Add(color);
             return new SuccessResult(Messages.ColorAdded);
+        }
+        public IResult Update(Color color)
+        {
+            _colorDal.Update(color);
+            return new SuccessResult(Messages.ColorUpdate);
+        }
+        public IResult Delete(Color color)
+        {
+            _colorDal.Delete(color);
+            return new SuccessResult(Messages.ColorDeleted);
         }
     }
 }
