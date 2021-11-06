@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRools.FluentValidation;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -59,7 +61,7 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<CarRentalDetailDto>>(_rentalDal.GetCarRentalDetails(), Messages.RentalListed);
         }
-
+        [ValidationAspect(typeof(RentalValidator))]
         public IResult Add(Rental rental)
         {
             var result = ChechReturnDate(rental.CarId);
