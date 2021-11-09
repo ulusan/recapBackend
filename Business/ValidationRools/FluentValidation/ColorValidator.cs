@@ -11,6 +11,7 @@ namespace Business.ValidationRools.FluentValidation
     {
         public ColorValidator()
         {
+            RuleFor(c => c.ColorName).NotEmpty();
             RuleFor(co => co.ColorName).MinimumLength(2).WithMessage("Renk Adı Minimum 2 Harfli Olmalıdır.");
         }
     }

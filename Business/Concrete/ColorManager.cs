@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Business.Abstract;
 using Business.Constants;
+using Business.Constants.Messages;
 using Business.ValidationRools.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
@@ -23,9 +25,9 @@ namespace Business.Concrete
         {
             if (DateTime.Now.Hour == 23)
             {
-                return new ErrorDataResult<List<Color>>(Messages.MaintenanceTime);
+                return new ErrorDataResult<List<Color>>(ColorMessages.MaintenanceTime);
             }
-            return new SuccessDataResult<List<Color>>(_colorDal.GetAll(), Messages.ColorListed);
+            return new SuccessDataResult<List<Color>>(_colorDal.GetAll(), ColorMessages.ColorListed);
         }
 
         public IDataResult<Color> GetById(int colorId)
@@ -37,17 +39,26 @@ namespace Business.Concrete
         {
             
             _colorDal.Add(color);
-            return new SuccessResult(Messages.ColorAdded);
+            return new SuccessResult(ColorMessages.ColorAdded);
         }
         public IResult Update(Color color)
         {
             _colorDal.Update(color);
-            return new SuccessResult(Messages.ColorUpdate);
+            return new SuccessResult(ColorMessages.ColorUpdate);
         }
         public IResult Delete(Color color)
         {
             _colorDal.Delete(color);
-            return new SuccessResult(Messages.ColorDeleted);
+            return new SuccessResult(ColorMessages.ColorDeleted);
+        }
+        private IResult CheckIfColorNameExist(string colorName)
+        {
+            var result = _colorDal.GetAll(c => c.ColorName == colorName).Any();
+            if (result)
+            {
+                return new ErrorResult();
+            }
+            return new SuccessResult();
         }
     }
 }

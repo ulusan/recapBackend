@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Business.Abstract;
 using Business.Constants;
+using Business.Constants.Messages;
 using Business.ValidationRools.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
@@ -34,17 +36,37 @@ namespace Business.Concrete
         {
             
             _brandDal.Add(brand);
-            return new SuccessResult(Messages.BrandAdded); ;
+            return new SuccessResult(BrandMessages.BrandAdded); ;
         }
         public IResult Delete(Brand brand)
         {
             _brandDal.Delete(brand);
-            return new SuccessResult(Messages.BrandDeleted);
+            return new SuccessResult(BrandMessages.BrandDeleted);
         }
+        [ValidationAspect(typeof(BrandValidator))]
         public IResult Update(Brand brand)
         {
             _brandDal.Update(brand);
-            return new SuccessResult(Messages.BrandUpdate);
+            return new SuccessResult(BrandMessages.BrandUpdate);
+        }
+
+        private IResult CheckIfBrandNameExist(string brandName)
+        {
+            var result = _brandDal.GetAll(b => b.BrandName == brandName).Any();
+            if (result == true)
+            {
+                return new ErrorResult(BrandMessages.SameNameExist);
+            }
+            return new SuccessResult();
+        }
+        private IResult CheckBrandExist(int brandId)
+        {
+            var result = _brandDal.GetAll(b => b.BrandId == brandId).Any();
+            if (!result)
+            {
+                return new ErrorResult("marka bulunamadı.");
+            }
+            return new SuccessResult();
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Business.Abstract;
 using Business.Constants;
+using Business.Constants.Messages;
 using Business.ValidationRools.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
@@ -24,7 +25,7 @@ namespace Business.Concrete
 
          public IDataResult<List<Rental>> GetAll()
         {
-            return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll(),Messages.RentalListed);
+            return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll(),RentalMessages.RentalListed);
         }
 
         public IDataResult<List<Rental>> GetById(int id)
@@ -37,9 +38,9 @@ namespace Business.Concrete
             var result = _rentalDal.GetCarRentalDetails();
             if (result.Count > 0)
             {
-                return new ErrorResult(Messages.RentalAddFailed);
+                return new ErrorResult(RentalMessages.RentalAddFailed);
             }
-            return new SuccessResult(Messages.RentalAdded);
+            return new SuccessResult(RentalMessages.RentalAdded);
         }
 
         public IResult UpdateReturnDate(Rental rental)
@@ -49,17 +50,17 @@ namespace Business.Concrete
 
             if (updateRental != null)
             {
-                return new ErrorResult(Messages.RentalUpdateFailed);
+                return new ErrorResult(RentalMessages.RentalUpdateFailed);
             }
 
             updateRental.ReturnDate = rental.ReturnDate;
             _rentalDal.Update(updateRental);
-            return new SuccessResult(Messages.RentalUpdated);
+            return new SuccessResult(RentalMessages.RentalUpdated);
         }
 
         public IDataResult<List<CarRentalDetailDto>> GetRentalCarDetails()
         {
-            return new SuccessDataResult<List<CarRentalDetailDto>>(_rentalDal.GetCarRentalDetails(), Messages.RentalListed);
+            return new SuccessDataResult<List<CarRentalDetailDto>>(_rentalDal.GetCarRentalDetails(), RentalMessages.RentalListed);
         }
         [ValidationAspect(typeof(RentalValidator))]
         public IResult Add(Rental rental)
@@ -67,33 +68,33 @@ namespace Business.Concrete
             var result = ChechReturnDate(rental.CarId);
             if (!result.Success && rental.ReturnDate < rental.RentDate)
             {
-                return new ErrorResult(Messages.RentalAddFailed);
+                return new ErrorResult(RentalMessages.RentalAddFailed);
             }
 
             _rentalDal.Add(rental);
-            return new SuccessResult(Messages.RentalAdded);
+            return new SuccessResult(RentalMessages.RentalAdded);
         }
 
         public IResult Update(Rental rental)
         {
             if (rental.RentalId! > 0)
             {
-                return new ErrorResult(Messages.RentalUpdateFailed);
+                return new ErrorResult(RentalMessages.RentalUpdateFailed);
             }
 
             _rentalDal.Update(rental);
-            return new SuccessResult(Messages.RentalUpdated);
+            return new SuccessResult(RentalMessages.RentalUpdated);
         }
 
         public IResult Delete(Rental rental)
         {
             if (rental.RentalId < 1)
             {
-                return new ErrorResult(Messages.RentalDeleteFailed);
+                return new ErrorResult(RentalMessages.RentalDeleteFailed);
             }
 
             _rentalDal.Delete(rental);
-            return new SuccessResult(Messages.RentalDeleted);
+            return new SuccessResult(RentalMessages.RentalDeleted);
         }
     }
 }

@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Business.Abstract;
-using Business.Constants;
+﻿using Business.Abstract;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Business.Constants.Messages;
 using Entities.DTOs;
 
 namespace Business.Concrete
@@ -21,7 +23,7 @@ namespace Business.Concrete
 
          public IDataResult<List<Customer>> GetAll()
         {
-            return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(),Messages.CustomerListed);
+            return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(),CustomerMessages.CustomerListed);
         }
 
         public IDataResult<List<Customer>> GetById(int id)
@@ -32,7 +34,7 @@ namespace Business.Concrete
         public IResult Add(Customer customer)
         {
             _customerDal.Add(customer);
-            return new SuccessResult(Messages.CustomerAdded);
+            return new SuccessResult(CustomerMessages.CustomerAdded);
         }
 
         public IResult Update(Customer customer)
@@ -40,19 +42,19 @@ namespace Business.Concrete
             if (customer.CustomerId > 0)
             {
                 _customerDal.Update(customer);
-                return new SuccessResult(Messages.CustomerUpdate);
+                return new SuccessResult(CustomerMessages.CustomerUpdate);
             }
-            return new ErrorResult(Messages.CustomerIdNotSpace);
+            return new ErrorResult(CustomerMessages.CustomerIdNotSpace);
         }
 
         public IResult Delete(Customer customer)
         {
             _customerDal.Delete(customer);
-            return new SuccessResult(Messages.CustomerDeleted);
+            return new SuccessResult(CustomerMessages.CustomerDeleted);
         }
         public IDataResult<List<CustomerDetailDto>> GetCustomerDetails()
         {
-            return new SuccessDataResult<List<CustomerDetailDto>>(_customerDal.GetCustomerDetails(), Messages.CustomerListed);
+            return new SuccessDataResult<List<CustomerDetailDto>>(_customerDal.GetCustomerDetails(), CustomerMessages.CustomerListed);
         }
     }
 }
