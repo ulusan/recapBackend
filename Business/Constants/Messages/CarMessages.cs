@@ -17,7 +17,7 @@ namespace Business.Constants.Messages
         public static string CarDeleted = "Araba Silindi";
         public static string CarNameAlreadyExists = "Araba İsmi zaten var";
         public static string ColorCountLimitExceded = "Renk Limiti aşıldı";
-        
+        public static string AuthorizationDenied = "Yetkilendirme Reddedildi";
         public static string CarCountOfCategoryError = "Araba Sayısı Kategorisi aşıldı"; 
 
     }

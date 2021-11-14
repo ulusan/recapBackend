@@ -21,7 +21,7 @@ namespace DataAccess.Concrete.EntityFramework
                     join brand in dbCarContext.Brands on car.BrandId equals brand.BrandId
                     join color in dbCarContext.Colors on car.ColorId equals color.ColorId
                     join customer in dbCarContext.Customers on rental.CustomerId equals customer.CustomerId
-                    join user in dbCarContext.Users on customer.UserId equals user.UserId
+                    join user in dbCarContext.Users on customer.UserId equals user.Id
                     select new CarRentalDetailDto()
                     {
                         RentalId = rental.RentalId,

@@ -20,10 +20,10 @@ namespace DataAccess.Concrete.EntityFramework
                 var result =
                     from customer in dbCarContext.Customers
                     join user in dbCarContext.Users
-                        on customer.UserId equals user.UserId
+                        on customer.UserId equals user.Id
                     select new CustomerDetailDto()
                     {
-                        UserId = user.UserId,
+                        UserId = user.Id,
                         UserFirstName = user.FirstName,
                         UserLastName = user.LastName,
 

@@ -11,6 +11,7 @@ namespace Core.Aspects.Autofac.Validation
 {
     public class ValidationAspect : MethodInterception
     {
+        //Aspect => methodun sonunda başında veya ortasında emir verdiğimizi methodu çalıştırıcak YAPI. ARAŞTIR
         private Type _validatorType;
         public ValidationAspect(Type validatorType)
         {
