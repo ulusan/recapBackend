@@ -20,8 +20,9 @@ using Core.Utilities.Security.JWT;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+
 
 namespace WebAPI
 {
@@ -43,6 +44,8 @@ namespace WebAPI
                 options.AddPolicy("AllowOrigin",
                     builder => builder.WithOrigins("http://localhost:44344"));
             });
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //services.AddSingleton<ICarDal, EfCarDal>();
             //services.AddSingleton<ICarService, CarManager>();
             //services.AddSingleton<IBrandDal, EfBrandDal>();
