@@ -11,9 +11,8 @@ namespace Entities.DTOs
         public int CustomerId { get; set; }
         public int ModelYear { get; set; }
         public decimal DailyPrice { get; set; }
-
-        public string CustomerFirstName { get; set; }
-        public string CustomerLastName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string CompanyName { get; set; }
         public string BrandName { get; set; }
         public string ColorName { get; set; }

@@ -26,8 +26,8 @@ namespace DataAccess.Concrete.EntityFramework
                     {
                         RentalId = rental.RentalId,
                         CustomerId = customer.CustomerId,
-                        CustomerFirstName = user.FirstName,
-                        CustomerLastName = user.LastName,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
                         CompanyName = customer.CompanyName,
                         BrandName = brand.BrandName,
                         ColorName = color.ColorName,

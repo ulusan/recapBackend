@@ -26,7 +26,7 @@ namespace DataAccess.Concrete.EntityFramework
                         UserId = user.Id,
                         UserFirstName = user.FirstName,
                         UserLastName = user.LastName,
-
+                        Email = user.Email,
                         CompanyName = customer.CompanyName,
                         CustomerId = customer.CustomerId
                     };
