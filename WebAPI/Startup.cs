@@ -42,7 +42,7 @@ namespace WebAPI
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowOrigin",
-                    builder => builder.WithOrigins("http://localhost:44344"));
+                    builder => builder.WithOrigins("http://localhost:4200"));
             });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -92,7 +92,7 @@ namespace WebAPI
 
             app.ConfigureCustomExceptionMiddleware();
 
-            app.UseCors(builder => builder.WithOrigins("http://localhost:44344").AllowAnyHeader());
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyHeader());
 
             app.UseHttpsRedirection();
 

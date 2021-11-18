@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Business.Constants.Messages;
+using Core.Aspects.Autofac.Transaction;
 using Entities.DTOs;
 
 namespace Business.Concrete
@@ -30,7 +31,14 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(cu=>cu.CustomerId == id));
         }
+        [TransactionScopeAspect]
+        public IResult TransactionalOperation(Customer car)
+        {
+            _customerDal.Update(car);
+            _customerDal.Add(car);
+            return new SuccessResult(CustomerMessages.CustomerUpdate);
 
+        }
         public IResult Add(Customer customer)
         {
             _customerDal.Add(customer);

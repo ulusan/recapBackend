@@ -6,6 +6,7 @@ using Business.Abstract;
 using Business.Constants;
 using Business.Constants.Messages;
 using Business.ValidationRools.FluentValidation;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -32,7 +33,14 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll(r=>r.RentalId==id));
         }
+        [TransactionScopeAspect]
+        public IResult TransactionalOperation(Rental rental)
+        {
+            _rentalDal.Update(rental);
+            _rentalDal.Add(rental);
+            return new SuccessResult(RentalMessages.RentalUpdate);
 
+        }
         public IResult ChechReturnDate(int carId)
         {
             var result = _rentalDal.GetCarRentalDetails();
@@ -55,7 +63,7 @@ namespace Business.Concrete
 
             updateRental.ReturnDate = rental.ReturnDate;
             _rentalDal.Update(updateRental);
-            return new SuccessResult(RentalMessages.RentalUpdated);
+            return new SuccessResult(RentalMessages.RentalUpdate);
         }
 
         public IDataResult<List<CarRentalDetailDto>> GetRentalCarDetails()
@@ -83,7 +91,7 @@ namespace Business.Concrete
             }
 
             _rentalDal.Update(rental);
-            return new SuccessResult(RentalMessages.RentalUpdated);
+            return new SuccessResult(RentalMessages.RentalUpdate);
         }
 
         public IResult Delete(Rental rental)

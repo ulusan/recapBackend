@@ -13,7 +13,7 @@ namespace Business.Constants.Messages
         public static string RentalDeleteFailed = "Araç Kiralama iptal edilemedi!";
         public static string RentalDeleted = "Araç Kiralama iptal edildi.";
         public static string RentalUpdateFailed = "Araç Kiralama güncellenenedi.";
-        public static string RentalUpdated = "Araç Kiralama güncellendi.";
+        public static string RentalUpdate = "Araç Kiralama güncellendi.";
         public static string RentalListed = "Araç Kiraları listelendi.";
         public static string CarCountOfCategoryError = "Bir Markada en fazla 15 araba olabilir.";
         public static string CarNameAlreadyExists = "Böyle Bir İsimde araba var";

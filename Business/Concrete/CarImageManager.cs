@@ -42,6 +42,7 @@ namespace Business.Concrete
             _carImageDal.Add(carImage);
             return new SuccessResult("Car image added");
         }
+       
         [ValidationAspect(typeof(CarImagesValidator))]
         public IResult Delete(CarImage carImage)
         {

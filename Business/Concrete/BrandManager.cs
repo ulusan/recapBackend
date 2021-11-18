@@ -6,6 +6,7 @@ using Business.Abstract;
 using Business.Constants;
 using Business.Constants.Messages;
 using Business.ValidationRools.FluentValidation;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -26,7 +27,14 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Brand>>(_brandDal.GetAll());
         }
+        [TransactionScopeAspect]
+        public IResult TransactionalOperation(Brand brand)
+        {
+            _brandDal.Update(brand);
+            _brandDal.Add(brand);
+            return new SuccessResult(BrandMessages.BrandUpdate);
 
+        }
         public IDataResult<Brand> GetById(int brandId)
         {
             return new SuccessDataResult<Brand>(_brandDal.Get(c => c.BrandId == brandId));

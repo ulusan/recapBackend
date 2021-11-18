@@ -93,16 +93,11 @@ namespace Business.Concrete
         }
 
         [TransactionScopeAspect]
-        public IResult AddTransactionalTest(Car car)
+        public IResult TransactionalOperation(Car car)
         {
-            Add(car);
-            if (car.DailyPrice < 1200)
-            {
-                throw new Exception("");
-            }
-
-            Add(car);
-            return null;
+            _carDal.Update(car);
+            _carDal.Add(car);
+            return new SuccessResult(CarMessages.CarUpdate);
 
         }
 

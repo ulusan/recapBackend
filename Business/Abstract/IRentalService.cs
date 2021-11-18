@@ -16,6 +16,7 @@ namespace Business.Abstract
         IResult Delete(Rental user);
         IDataResult<List<CarRentalDetailDto>> GetRentalCarDetails();
 
+        IResult TransactionalOperation(Rental rental);
 
         IResult ChechReturnDate(int carId);
         IResult UpdateReturnDate(Rental rental);

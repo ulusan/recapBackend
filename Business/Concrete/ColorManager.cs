@@ -6,6 +6,7 @@ using Business.Abstract;
 using Business.Constants;
 using Business.Constants.Messages;
 using Business.ValidationRools.FluentValidation;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -29,7 +30,14 @@ namespace Business.Concrete
             }
             return new SuccessDataResult<List<Color>>(_colorDal.GetAll(), ColorMessages.ColorListed);
         }
+        [TransactionScopeAspect]
+        public IResult TransactionalOperation(Color color)
+        {
+            _colorDal.Update(color);
+            _colorDal.Add(color);
+            return new SuccessResult(ColorMessages.ColorUpdate);
 
+        }
         public IDataResult<Color> GetById(int colorId)
         {
             return new SuccessDataResult<Color>(_colorDal.Get(co=>co.ColorId==colorId));
