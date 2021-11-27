@@ -22,11 +22,12 @@ namespace Business.Concrete
         {
             _brandDal = brandDal;
         }
-
+        //Tümünü getir
         public IDataResult<List<Brand>> GetAll()
         {
-            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll());
+            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(),BrandMessages.BrandListed);
         }
+        //İşlemsel Operasyon
         [TransactionScopeAspect]
         public IResult TransactionalOperation(Brand brand)
         {
@@ -35,10 +36,12 @@ namespace Business.Concrete
             return new SuccessResult(BrandMessages.BrandUpdate);
 
         }
+        //Markaların Id sini getir
         public IDataResult<Brand> GetById(int brandId)
         {
             return new SuccessDataResult<Brand>(_brandDal.Get(c => c.BrandId == brandId));
         }
+        //Marka ekle
         [ValidationAspect(typeof(BrandValidator))]
         public IResult Add(Brand brand)
         {
@@ -46,11 +49,13 @@ namespace Business.Concrete
             _brandDal.Add(brand);
             return new SuccessResult(BrandMessages.BrandAdded); ;
         }
+        //Marka sil
         public IResult Delete(Brand brand)
         {
             _brandDal.Delete(brand);
             return new SuccessResult(BrandMessages.BrandDeleted);
         }
+        //markayı güncelle
         [ValidationAspect(typeof(BrandValidator))]
         public IResult Update(Brand brand)
         {
@@ -58,6 +63,8 @@ namespace Business.Concrete
             return new SuccessResult(BrandMessages.BrandUpdate);
         }
 
+
+        //Marka Adının Var Olup Olmadığını Kontrol Edin
         private IResult CheckIfBrandNameExist(string brandName)
         {
             var result = _brandDal.GetAll(b => b.BrandName == brandName).Any();
@@ -67,6 +74,7 @@ namespace Business.Concrete
             }
             return new SuccessResult();
         }
+        //Marka Varlığını Kontrol Edin
         private IResult CheckBrandExist(int brandId)
         {
             var result = _brandDal.GetAll(b => b.BrandId == brandId).Any();

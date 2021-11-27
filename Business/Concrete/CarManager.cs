@@ -33,31 +33,23 @@ namespace Business.Concrete
             _carDal = carDal;
 
         }
-
         [CacheAspect]
-        public IDataResult<List<Car>> GetAll()
+        public IDataResult<List<CarDetailDto>> GetAll()
         {
-            if (DateTime.Now.Hour == 23)
+            if (DateTime.Now.Hour == 1)
             {
-                return new ErrorDataResult<List<Car>>(CarMessages.MaintenanceTime);
+                return new ErrorDataResult<List<CarDetailDto>>(CarMessages.MaintenanceTime);
             }
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(), CarMessages.CarListed);
+            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(),CarMessages.CarListed);
         }
-
-        public IDataResult<List<Car>> GetByUnitPrice(decimal min, decimal max)
+        public IDataResult<List<Car>> GetByDailyPrice(decimal min, decimal max)
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.DailyPrice >= min && c.DailyPrice <= max));
         }
-
         [CacheAspect]
         public IDataResult<List<CarDetailDto>> GetCarDetails()
         {
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails());
-        }
-        [CacheAspect]
-        public IDataResult<List<CarDetailDto>> GetCarDetailsById(int id)
-        {
-            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(c => c.CarId == id));
         }
 
         [PerformanceAspect(5)]
@@ -66,8 +58,6 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<Car>(_carDal.Get(c => c.CarId == carId));
         }
-
-
         [CacheRemoveAspect("ICarService.Get")]
         [SecuredOperation("car.add,admin")]
         [ValidationAspect(typeof(CarValidator))]
@@ -85,27 +75,20 @@ namespace Business.Concrete
             _carDal.Add(car);
             return new SuccessResult(CarMessages.CarAdded);
         }
-
-
-        public IDataResult<List<Car>> GetCarsByBrandId(int brandId)
-        {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.BrandId == brandId));
-        }
-
-        public IDataResult<List<Car>> GetCarsByColorId(int colorId)
-        {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.ColorId == colorId));
-        }
-
-        public IDataResult<List<CarDetailDto>> GetCarDetailsByBrandId(int brandId)
-        {
-            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(c => c.BrandId == brandId));
-        }
-
         public IResult Delete(Car car)
         {
             _carDal.Delete(car);
             return new SuccessResult(CarMessages.CarDeleted);
+        }
+
+        public IDataResult<CarDetailDto> GetDetailByCarId(int id)
+        {
+            var result = _carDal.Get(c => c.CarId == id);
+            if (result==null)
+            {
+                return new ErrorDataResult<CarDetailDto>();
+            }
+            return new SuccessDataResult<CarDetailDto>(_carDal.GetDetailByCarId(id));
         }
 
         [TransactionScopeAspect]
@@ -116,7 +99,6 @@ namespace Business.Concrete
             return new SuccessResult(CarMessages.CarUpdate);
 
         }
-
         [CacheRemoveAspect("IProductService.Get")]
         [ValidationAspect(typeof(CarValidator))]
         public IResult Update(Car car)
@@ -156,7 +138,7 @@ namespace Business.Concrete
             }
             return new SuccessResult();
         }
-
+        //Renk Sayısı Sınırının Aşılıp Aşılmadığını Kontrol Edin
         private IResult CheckIfColorCountLimitExceded()
         {
             var result = _colorService.GetAll();
@@ -165,6 +147,16 @@ namespace Business.Concrete
                 return new ErrorResult(CarMessages.ColorCountLimitExceded);
             }
             return new SuccessResult();
+        }
+
+        public IDataResult<List<Car>> GetAllByBrandId(int brandId)
+        {
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.BrandId == brandId));
+        }
+
+        public IDataResult<List<Car>> GetAllByColorId(int colorId)
+        {
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.ColorId == colorId));
         }
     }
 }

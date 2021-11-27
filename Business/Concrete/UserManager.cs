@@ -30,6 +30,12 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<User>>(_userDal.GetAll(u=>u.Id == id), UserMessages.UserListed);
         }
+
+        public IDataResult<List<OperationClaim>> GetUserClaims(User user)
+        {
+            return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user)+"talepler listelendi");
+        }
+
         [TransactionScopeAspect]
         public IResult TransactionalOperation(User user)
         {
@@ -63,9 +69,9 @@ namespace Business.Concrete
         {
             return _userDal.Get(u => u.Email == email);
         }
-        public List<OperationClaim> GetClaims(User user)
+        public IDataResult<List<OperationClaim>> GetClaimsById(int userId)
         {
-            return _userDal.GetClaims(user);
+            return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaimsByUserId(userId));
         }
     }
 }

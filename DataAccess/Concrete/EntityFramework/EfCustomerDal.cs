@@ -28,12 +28,12 @@ namespace DataAccess.Concrete.EntityFramework
                         UserLastName = user.LastName,
                         Email = user.Email,
                         CompanyName = customer.CompanyName,
-                        CustomerId = customer.CustomerId
+                        CustomerId = customer.CustomerId,
                     };
                 return result.ToList();
             }
         }
 
-        
+
     }
 }

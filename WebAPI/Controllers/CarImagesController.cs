@@ -19,6 +19,7 @@ namespace WebAPI.Controllers
         {
             _carImageService = carImageService;
         }
+        //resim ekle
         [HttpPost("add")]
         public IActionResult Add([FromForm(Name = ("Image"))] IFormFile file, [FromForm] CarImage images)
         {
@@ -29,7 +30,7 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
-
+        //resim sil
         [HttpPost("delete")]
         public IActionResult Delete([FromForm(Name = ("Id"))] int Id)
         {
@@ -43,7 +44,7 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
-
+        //resim güncelle
         [HttpPost("update")]
         public IActionResult Update([FromForm(Name = ("Image"))] IFormFile file, [FromForm(Name = ("Id"))] int Id)
         {
@@ -55,10 +56,11 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
+        //resimleri listele
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
-            //Thread.Sleep(3000);
+            //Thread.Sleep(1000);
             var result = _carImageService.GetAll();
             if (result.Success)
             {
@@ -66,7 +68,8 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
-        [HttpGet("getbycarıd")]
+        //resimlerin car-id lerini getir
+        [HttpGet("getbycarid")]
         public IActionResult GetByCarId(int carId)
         {
             var result = _carImageService.GetByCarId(carId);
@@ -76,6 +79,7 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
+        //resimlerin idlerini getir
         [HttpGet("getbyimageid")]
         public IActionResult GetByImageId([FromForm(Name = ("CarId"))] int imageId)
         {

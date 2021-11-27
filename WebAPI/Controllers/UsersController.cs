@@ -57,7 +57,7 @@ namespace WebAPI.Controllers
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
-            //Thread.Sleep(3000);
+            //Thread.Sleep(1000);
             var result = _userService.GetAll();
             if (result.Success)
             {
@@ -75,6 +75,27 @@ namespace WebAPI.Controllers
                 return Ok(result);
             }
 
+            return BadRequest(result);
+        }
+
+        [HttpGet("getuserclaimsbyid")]
+        public IActionResult GetUserClaims(int user)
+        {
+            var result = _userService.GetClaimsById(user);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(result);
+        }
+        [HttpGet("getclaimsbyid")]
+        public IActionResult GetClaimsBy(int userId)
+        {
+            var result = _userService.GetClaimsById(userId);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
             return BadRequest(result);
         }
     }

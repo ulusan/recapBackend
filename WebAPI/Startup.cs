@@ -89,6 +89,8 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            //dosyayý almak için
+            app.UseStaticFiles();
 
             app.ConfigureCustomExceptionMiddleware();
 

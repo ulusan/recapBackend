@@ -57,7 +57,7 @@ namespace WebAPI.Controllers
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
-            //Thread.Sleep(3000);
+            //Thread.Sleep(1000);
             var result = _colorService.GetAll();
             if (result.Success)
             {
@@ -77,5 +77,16 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+        //[HttpGet("getbycolorid")]
+        //public IActionResult GetAllByColor(int colorId)
+        //{
+        //    var result = _colorService.GetAllByColorId(colorId);
+        //    if (result.Success)
+        //    {
+        //        return Ok(result);
+        //    }
+
+        //    return BadRequest(result);
+        //}
     }
 }

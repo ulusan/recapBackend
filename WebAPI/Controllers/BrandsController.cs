@@ -19,6 +19,8 @@ namespace WebAPI.Controllers
         {
             _brandService = brandService;
         }
+
+        //marka ekle
         [HttpPost("add")]
         public IActionResult Add(Brand brand)
         {
@@ -30,6 +32,7 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+        //markayı güncelle
         [HttpPost("update")]
         public IActionResult Update(Brand brand)
         {
@@ -41,6 +44,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
 
         }
+        //markayı sil
         [HttpPost("delete")]
         public IActionResult Delete(Brand brand)
         {
@@ -52,11 +56,11 @@ namespace WebAPI.Controllers
             return BadRequest(result);
 
         }
-
+        //tüm markaları listele
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
-            //Thread.Sleep(3000);
+            //Thread.Sleep(1000);
             var result = _brandService.GetAll();
             if (result.Success)
             {
@@ -65,10 +69,11 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+        //markaların id sini getir
         [HttpGet("getbyid")]
-        public IActionResult GetById(int id)
+        public IActionResult GetById(int brandId)
         {
-            var result = _brandService.GetById(id);
+            var result = _brandService.GetById(brandId);
             if (result.Success)
             {
                 return Ok(result);

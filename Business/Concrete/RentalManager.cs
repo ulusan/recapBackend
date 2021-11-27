@@ -17,29 +17,19 @@ namespace Business.Concrete
 {
     public class RentalManager : IRentalService
     {
-         IRentalDal _rentalDal;
+        IRentalDal _rentalDal;
 
-         public RentalManager(IRentalDal rentalDal)
-         {
-             _rentalDal = rentalDal;
-         }
-
-         public IDataResult<List<Rental>> GetAll()
+        public RentalManager(IRentalDal rentalDal)
         {
-            return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll(),RentalMessages.RentalListed);
+            _rentalDal = rentalDal;
         }
-
+        public IDataResult<List<Rental>> GetAll()
+        {
+            return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll(), RentalMessages.RentalListed);
+        }
         public IDataResult<List<Rental>> GetById(int id)
         {
-            return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll(r=>r.RentalId==id));
-        }
-        [TransactionScopeAspect]
-        public IResult TransactionalOperation(Rental rental)
-        {
-            _rentalDal.Update(rental);
-            _rentalDal.Add(rental);
-            return new SuccessResult(RentalMessages.RentalUpdate);
-
+            return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll(r => r.RentalId == id));
         }
         public IResult ChechReturnDate(int carId)
         {
@@ -50,7 +40,6 @@ namespace Business.Concrete
             }
             return new SuccessResult(RentalMessages.RentalAdded);
         }
-
         public IResult UpdateReturnDate(Rental rental)
         {
             var result = _rentalDal.GetAll(p => p.RentalId == rental.RentalId);
@@ -65,7 +54,6 @@ namespace Business.Concrete
             _rentalDal.Update(updateRental);
             return new SuccessResult(RentalMessages.RentalUpdate);
         }
-
         public IDataResult<List<CarRentalDetailDto>> GetRentalCarDetails()
         {
             return new SuccessDataResult<List<CarRentalDetailDto>>(_rentalDal.GetCarRentalDetails(), RentalMessages.RentalListed);
@@ -82,7 +70,6 @@ namespace Business.Concrete
             _rentalDal.Add(rental);
             return new SuccessResult(RentalMessages.RentalAdded);
         }
-
         public IResult Update(Rental rental)
         {
             if (rental.RentalId! > 0)
@@ -93,7 +80,6 @@ namespace Business.Concrete
             _rentalDal.Update(rental);
             return new SuccessResult(RentalMessages.RentalUpdate);
         }
-
         public IResult Delete(Rental rental)
         {
             if (rental.RentalId < 1)
@@ -103,6 +89,14 @@ namespace Business.Concrete
 
             _rentalDal.Delete(rental);
             return new SuccessResult(RentalMessages.RentalDeleted);
+        }
+        [TransactionScopeAspect]
+        public IResult TransactionalOperation(Rental rental)
+        {
+            _rentalDal.Update(rental);
+            _rentalDal.Add(rental);
+            return new SuccessResult(RentalMessages.RentalUpdate);
+
         }
     }
 }

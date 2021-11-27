@@ -30,14 +30,6 @@ namespace Business.Concrete
             }
             return new SuccessDataResult<List<Color>>(_colorDal.GetAll(), ColorMessages.ColorListed);
         }
-        [TransactionScopeAspect]
-        public IResult TransactionalOperation(Color color)
-        {
-            _colorDal.Update(color);
-            _colorDal.Add(color);
-            return new SuccessResult(ColorMessages.ColorUpdate);
-
-        }
         public IDataResult<Color> GetById(int colorId)
         {
             return new SuccessDataResult<Color>(_colorDal.Get(co=>co.ColorId==colorId));
@@ -58,6 +50,14 @@ namespace Business.Concrete
         {
             _colorDal.Delete(color);
             return new SuccessResult(ColorMessages.ColorDeleted);
+        }
+        [TransactionScopeAspect]
+        public IResult TransactionalOperation(Color color)
+        {
+            _colorDal.Update(color);
+            _colorDal.Add(color);
+            return new SuccessResult(ColorMessages.ColorUpdate);
+
         }
         private IResult CheckIfColorNameExist(string colorName)
         {

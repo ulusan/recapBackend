@@ -13,6 +13,8 @@ namespace Business.Abstract
         IResult Add(Brand brand);
         IResult Delete(Brand brand);
         IResult Update(Brand brand);
+
+        //İşlemsel Operasyon
         IResult TransactionalOperation(Brand brand);
     }
 }

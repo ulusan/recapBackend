@@ -22,6 +22,7 @@ namespace Business.Concrete
             _carImageDal = carImageDal;
             
         }
+        //resim ekle
         [ValidationAspect(typeof(CarImagesValidator))]
         public IResult Add(IFormFile file, CarImage carImage)
         {
@@ -39,10 +40,11 @@ namespace Business.Concrete
                 return new ErrorResult(imageResult.Message);
             }
             carImage.ImagePath = imageResult.Message;
+            carImage.Date = DateTime.Now;
             _carImageDal.Add(carImage);
             return new SuccessResult("Car image added");
         }
-       
+        //resim sil
         [ValidationAspect(typeof(CarImagesValidator))]
         public IResult Delete(CarImage carImage)
         {
@@ -56,6 +58,7 @@ namespace Business.Concrete
             _carImageDal.Delete(carImage);
             return new SuccessResult("Image was deleted successfully");
         }
+        //resim güncelle
         [ValidationAspect(typeof(CarImagesValidator))]
         public IResult Update(IFormFile file, CarImage carImage)
         {
@@ -74,10 +77,12 @@ namespace Business.Concrete
             _carImageDal.Update(carImage);
             return new SuccessResult("Car image updated");
         }
+        //resimleri getir
         public IDataResult<CarImage> Get(int id)
         {
             return new SuccessDataResult<CarImage>(_carImageDal.Get(p => p.CarImageId == id));
         }
+        //resimlerin car-id lerini getir
         public IDataResult<List<CarImage>> GetByCarId(int carId)
         {
             var result = BusinessRules.Run(CheckCarImage(carId));
@@ -87,15 +92,17 @@ namespace Business.Concrete
             }
             return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(c => c.CarId == carId));
         }
+        //resimlerin idlerini getir
         public IDataResult<CarImage> GetByImageId(int imageId)
         {
             return new SuccessDataResult<CarImage>(_carImageDal.Get(c => c.CarImageId == imageId));
         }
+        //resimlerin hepsini listele
         public IDataResult<List<CarImage>> GetAll()
         {
             return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll());
         }
-
+        //CarImage Limitini Kontrol Edin
         private IResult CheckIfCarImageLimit(int carId)
         {
             var result = _carImageDal.GetAll(c => c.CarId == carId).Count;
@@ -105,6 +112,7 @@ namespace Business.Concrete
             }
             return new SuccessResult();
         }
+        //Varsayılan Resmi Al
         private IDataResult<List<CarImage>> GetDefaultImage(int carId)
         {
 
@@ -112,6 +120,7 @@ namespace Business.Concrete
             carImage.Add(new CarImage { CarId = carId, Date = DateTime.Now, ImagePath = "DefaultImage.jpg" });
             return new SuccessDataResult<List<CarImage>>(carImage);
         }
+        //CarImage'ı Kontrol Et
         private IResult CheckCarImage(int carId)
         {
             var result = _carImageDal.GetAll(c => c.CarId == carId).Count;

@@ -9,14 +9,21 @@ namespace Business.Abstract
 {
     public interface ICustomerService
     {
-        IDataResult<List<Customer>> GetAll();
-        IDataResult<List<Customer>> GetById(int id);
-
-        IDataResult<List<CustomerDetailDto>> GetCustomerDetails();
-        IResult TransactionalOperation(Customer customer);
-
+        //Müşteri ekle
         IResult Add(Customer customer);
+        //Müşteri güncelle
         IResult Update(Customer customer);
+        //Müşteri sil
         IResult Delete(Customer customer);
+        //Müşterileri listele
+        IDataResult<List<Customer>> GetAll();
+        //Müşterilerin id sini listele
+        IDataResult<List<Customer>> GetById(int id);
+        //Kullanıcı Kimliğine Göre Müşteri Alın
+        IDataResult<Customer> GetCustomerByUserId(int userId);
+        //Müşteri Ayrıntılarını Alın
+        IDataResult<List<CustomerDetailDto>> GetCustomerDetails();
+        
+        IResult TransactionalOperation(Customer customer);
     }
 }
