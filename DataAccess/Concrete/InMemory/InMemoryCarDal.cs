@@ -74,6 +74,16 @@ namespace DataAccess.Concrete.InMemory
             return null;
         }
 
+        public List<CarDetailDto> GetAllByColorId(int colorId)
+        {
+            return null;
+        }
+
+        public List<CarDetailDto> GetAllByBrandId(int brandId)
+        {
+            return null;
+        }
+
         public void Update(Car car)
         {
             Car carToUpdate = _cars.SingleOrDefault(c => c.CarId == car.CarId);
