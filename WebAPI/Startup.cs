@@ -1,27 +1,16 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Business.Abstract;
-using Business.Concrete;
 using Core.DependencyResolvers;
 using Core.Extensions;
 using Core.IoC;
 using Core.Utilities.Security.Encryption;
 using Core.Utilities.Security.JWT;
-using DataAccess.Abstract;
-using DataAccess.Concrete.EntityFramework;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 
 namespace WebAPI
@@ -39,13 +28,8 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowOrigin",
-                    builder => builder.WithOrigins("http://localhost:4200"));
-            });
+            services.AddCors();
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //services.AddSingleton<ICarDal, EfCarDal>();
             //services.AddSingleton<ICarService, CarManager>();
             //services.AddSingleton<IBrandDal, EfBrandDal>();
@@ -58,10 +42,37 @@ namespace WebAPI
             //services.AddSingleton<IUserService, UserManager>();
             //services.AddSingleton<IRentalDal, EfRentalDal>();
             //services.AddSingleton<IRentalService, RentalManager>();
+            services.AddSwaggerGen(opt =>
+            {
+                opt.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "ReCapProject API", Description = "This is the endpoint UI for ReCapProject", Version = "v1" });
+
+                opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer",
+                });
+                opt.AddSecurityRequirement(new OpenApiSecurityRequirement{
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[] { }
+            }
+        });
+            });
+
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
@@ -73,13 +84,13 @@ namespace WebAPI
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
                     };
-                });
+                }
+            );
+
             services.AddDependencyResolvers(new ICoreModule[]
             {
-                new CoreModule(),
+                new CoreModule()
             });
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,8 +100,7 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-            //dosyayý almak için
-            app.UseStaticFiles();
+
 
             app.ConfigureCustomExceptionMiddleware();
 
@@ -99,6 +109,8 @@ namespace WebAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            //dosyayý almak için
+            app.UseStaticFiles();
 
             app.UseAuthentication();
 
@@ -107,6 +119,13 @@ namespace WebAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger");
+                c.InjectStylesheet("/SwaggerDark.css");
             });
         }
     }

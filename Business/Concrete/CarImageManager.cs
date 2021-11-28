@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Business.Abstract;
 using Business.Constants;
+using Business.Constants.Messages;
 using Business.ValidationRools.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Business;
@@ -10,6 +11,7 @@ using Core.Utilities.Helpers.FileHelper;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 
 namespace Business.Concrete
@@ -17,73 +19,56 @@ namespace Business.Concrete
     public class CarImageManager : ICarImageService
     {
         ICarImageDal _carImageDal;
-        public CarImageManager(ICarImageDal carImageDal)
+        IUploadService _uploadService;
+
+        public CarImageManager(ICarImageDal carImageDal, IUploadService uploadService)
         {
             _carImageDal = carImageDal;
-            
+            _uploadService = uploadService;
         }
         //resim ekle
         [ValidationAspect(typeof(CarImagesValidator))]
-        public IResult Add(IFormFile file, CarImage carImage)
+        public IResult Add(CarImageForAddDto carImageForAddDto)
         {
-            var imageCount = _carImageDal.GetAll(c => c.CarId == carImage.CarId).Count;
-
-            if (imageCount >= 5)
+            IResult result = BusinessRules.Run(
+                CheckIfCarImageLimit(carImageForAddDto.CarId)
+            );
+            if (result != null)
             {
-                return new ErrorResult("One car must have 5 or less images");
+                return result;
             }
 
-            var imageResult = FileHelper.Upload(file);
-
-            if (!imageResult.Success)
-            {
-                return new ErrorResult(imageResult.Message);
-            }
-            carImage.ImagePath = imageResult.Message;
+            CarImage carImage = new CarImage();
+            carImage.CarId = carImageForAddDto.CarId;
+            carImage.ImagePath = _uploadService.AddFromBase64(carImageForAddDto.Image);
             carImage.Date = DateTime.Now;
             _carImageDal.Add(carImage);
-            return new SuccessResult("Car image added");
+            return new SuccessResult(CarImagesMessages.CarImageAdded);
         }
         //resim sil
         [ValidationAspect(typeof(CarImagesValidator))]
-        public IResult Delete(CarImage carImage)
+        public IResult Delete(int id)
         {
-            var image = _carImageDal.Get(c => c.CarImageId == carImage.CarImageId);
-            if (image == null)
-            {
-                return new ErrorResult("Image not found");
-            }
-
-            FileHelper.Delete(image.ImagePath);
+            var carImage = _carImageDal.Get(c => c.CarImageId == id);
+            if (carImage == null) return new ErrorResult();
+            _uploadService.Remove(carImage.ImagePath);
             _carImageDal.Delete(carImage);
-            return new SuccessResult("Image was deleted successfully");
+            return new SuccessResult(CarImagesMessages.CarImageDeleted);
         }
         //resim güncelle
         [ValidationAspect(typeof(CarImagesValidator))]
-        public IResult Update(IFormFile file, CarImage carImage)
+        public IResult Update(CarImageForUpdateDto carImageForUpdateDto)
         {
-            var isImage = _carImageDal.Get(c => c.CarImageId == carImage.CarImageId);
-            if (isImage == null)
-            {
-                return new ErrorResult("Image not found");
-            }
-
-            var updatedFile = FileHelper.Update(file, isImage.ImagePath);
-            if (!updatedFile.Success)
-            {
-                return new ErrorResult(updatedFile.Message);
-            }
-            carImage.ImagePath = updatedFile.Message;
+            var carImage = _carImageDal.Get(c => c.CarImageId == carImageForUpdateDto.CarId);
+            string newPath = _uploadService.UpdateFromBase64(carImage.ImagePath, carImageForUpdateDto.Image);
+            carImage.ImagePath = newPath;
+            carImage.Date = DateTime.Now;
             _carImageDal.Update(carImage);
-            return new SuccessResult("Car image updated");
+            return new SuccessResult(CarImagesMessages.CarImageUpdated);
         }
-        //resimleri getir
-        public IDataResult<CarImage> Get(int id)
-        {
-            return new SuccessDataResult<CarImage>(_carImageDal.Get(p => p.CarImageId == id));
-        }
+        
         //resimlerin car-id lerini getir
-        public IDataResult<List<CarImage>> GetByCarId(int carId)
+        public IDataResult<List<CarImage>> GetAllByCarId(int carId)
         {
             var result = BusinessRules.Run(CheckCarImage(carId));
             if (result != null)

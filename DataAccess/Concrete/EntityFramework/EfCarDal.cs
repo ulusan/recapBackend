@@ -38,7 +38,7 @@ namespace DataAccess.Concrete.EntityFramework
                 return result.ToList();
             }
         }
-        public CarDetailDto GetDetailByCarId(int id)
+        public CarDetailDto GetCarDetailById(int id)
         {
             using (DbCarContext dbCarContext = new DbCarContext())
             {

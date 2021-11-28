@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using Core.Utilities.Results;
 using Microsoft.AspNetCore.Http;
 
@@ -9,109 +10,65 @@ namespace Core.Utilities.Helpers.FileHelper
 {
     public class FileHelper
     {
-
-        private static string _currentDirectory = Environment.CurrentDirectory + "\\wwwroot";
-        private static string _folderName = "\\images\\";
-
-        public static  IResult Upload(IFormFile file)
+        public static string Add(IFormFile file, string folder = "")
         {
-            var fileExists = CheckFileExists(file);
-            if (fileExists.Message != null)
+            if (file.Length > 0)
             {
-                return new ErrorResult(fileExists.Message);
+                string tempPath = Path.GetTempFileName();
+                using (FileStream fileStream = new FileStream(tempPath, FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+                string newPath = NewPath(file);
+                File.Move(tempPath, Environment.CurrentDirectory + @"\wwwroot\images\" + folder + newPath);
+                return newPath;
             }
-
-            var type = Path.GetExtension(file.FileName);
-            var typeValid = CheckFileTypeValid(type);
-            var randomName = Guid.NewGuid().ToString();
-
-            if (typeValid.Message != null)
-            {
-                return new ErrorResult(typeValid.Message);
-            }
-
-            CheckDirectoryExists(_currentDirectory + _folderName);
-            CreateImageFile(_currentDirectory + _folderName + randomName + type, file);
-            return new SuccessResult((_folderName + randomName + type).Replace("\\", "/"));
-
-
-
+            return null;
         }
 
-        public static IResult Update(IFormFile file, string imagePath)
+        public static string AddFromBase64(string base64, string folder = "")
         {
-            var fileExists = CheckFileExists(file);
-            if (fileExists.Message != null)
-            {
-                return new ErrorResult(fileExists.Message);
-            }
-
-            var type = Path.GetExtension(file.FileName);
-            var typeValid = CheckFileTypeValid(type);
-            var randomName = Guid.NewGuid().ToString();
-
-            if (typeValid.Message != null)
-            {
-                return new ErrorResult(typeValid.Message);
-            }
-
-            DeleteOldImageFile((_currentDirectory + imagePath).Replace("/", "\\"));
-            CheckDirectoryExists(_currentDirectory + _folderName);
-            CreateImageFile(_currentDirectory + _folderName + randomName + type, file);
-            return new SuccessResult((_folderName + randomName + type).Replace("\\", "/"));
-        }
-
-        public static IResult Delete(string path)
-        {
-            DeleteOldImageFile((_currentDirectory + path).Replace("/", "\\"));
-            return new SuccessResult();
+            base64 = Regex.Replace(base64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
+            byte[] imageBytes = Convert.FromBase64String(base64);
+            string newPath = NewPathForBase64();
+            File.WriteAllBytes(Environment.CurrentDirectory + @"\wwwroot\images\" + folder + @"\" + newPath, imageBytes);
+            return newPath;
         }
 
 
 
-
-        private static IResult CheckFileExists(IFormFile file)
+        public static IResult Remove(string path, string folder = "")
         {
-            if (file != null && file.Length > 0)
+            path = Environment.CurrentDirectory + @"\wwwroot\images\" + folder + path;
+            if (!File.Exists(path))
             {
-                return new SuccessResult();
+                return new ErrorResult("File not found.");
             }
-            return new ErrorResult("File doesn't exists.");
+            File.Delete(path);
+            return new SuccessResult("File deleted succesfully.");
+        }
+        public static string UpdateBase64(string oldPath, string base64)
+        {
+            Remove(oldPath);
+            return AddFromBase64(base64);
         }
 
-
-        private static IResult CheckFileTypeValid(string type)
+        public static string Update(string oldPath, IFormFile file)
         {
-            if (type != ".jpeg" && type != ".png" && type != ".jpg" && type!=".jfif")
-            {
-                return new ErrorResult("Wrong file type.");
-            }
-            return new SuccessResult();
+            Remove(oldPath);
+            return Add(file);
         }
 
-        private static void CheckDirectoryExists(string directory)
+        public static string NewPath(IFormFile file)
         {
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-        }
-        private static void CreateImageFile(string directory, IFormFile file)
-        {
-            using (FileStream fs = File.Create(directory))
-            {
-                file.CopyTo(fs);
-                fs.Flush();
-            }
+            FileInfo fileInfo = new FileInfo(file.FileName);
+            string fileExtension = fileInfo.Extension;
+            return Guid.NewGuid() + fileExtension;
         }
 
-        private static void DeleteOldImageFile(string directory)
+        public static string NewPathForBase64()
         {
-            if (File.Exists(directory.Replace("/", "\\")))
-            {
-                File.Delete(directory.Replace("/", "\\"));
-            }
-
+            return Guid.NewGuid().ToString("N") + ".jpg";
         }
     }
 }

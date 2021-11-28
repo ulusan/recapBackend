@@ -20,9 +20,6 @@ namespace Business.Abstract
         //Müşterilerin id sini listele
         IDataResult<List<Customer>> GetById(int id);
         //Kullanıcı Kimliğine Göre Müşteri Alın
-        IDataResult<Customer> GetCustomerByUserId(int userId);
-        //Müşteri Ayrıntılarını Alın
-        IDataResult<List<CustomerDetailDto>> GetCustomerDetails();
         
         IResult TransactionalOperation(Customer customer);
     }

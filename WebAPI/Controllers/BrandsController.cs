@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
                 return Ok(result);
             }
 
-            return BadRequest(result);
+            return StatusCode(result.Success ? 200 : 400, result);
         }
         //markayı güncelle
         [HttpPost("update")]
@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
             {
                 return Ok(result);
             }
-            return BadRequest(result);
+            return StatusCode(result.Success ? 200 : 400, result);
 
         }
         //markayı sil
@@ -53,7 +53,7 @@ namespace WebAPI.Controllers
             {
                 return Ok(result);
             }
-            return BadRequest(result);
+            return StatusCode(result.Success ? 200 : 400, result);
 
         }
         //tüm markaları listele
@@ -67,7 +67,7 @@ namespace WebAPI.Controllers
                 return Ok(result);
             }
 
-            return BadRequest(result);
+            return StatusCode(result.Success ? 200 : 400, result);
         }
         //markaların id sini getir
         [HttpGet("getbyid")]
@@ -79,7 +79,7 @@ namespace WebAPI.Controllers
                 return Ok(result);
             }
 
-            return BadRequest(result);
+            return StatusCode(result.Success ? 200 : 400, result);
         }
 
 

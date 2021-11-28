@@ -15,7 +15,6 @@ namespace WebAPI.Controllers
     public class CarsController : ControllerBase
     {
         ICarService _carService;
-
         public CarsController(ICarService carService)
         {
             _carService = carService;
@@ -33,6 +32,7 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+
         [HttpGet("getbyid")]
         public IActionResult GetById(int id)
         {
@@ -44,17 +44,8 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
-        [HttpGet("getbydailyprice")]
-        public IActionResult GetCarsByDailyPrice(decimal min, decimal max)
-        {
-            var result = _carService.GetByDailyPrice(min,max);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
 
-            return BadRequest(result);
-        }
+        
         
         [HttpGet("getbybrand")]
         public IActionResult GetAllByBrand(int brandId)
@@ -67,6 +58,7 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+
         [HttpGet("getbycolor")]
         public IActionResult GetAllByColor(int colorId)
         {
@@ -90,6 +82,7 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+
         [HttpPost("add")]
         public IActionResult Add(Car car)
         {
@@ -101,6 +94,7 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+
         [HttpPost("update")]
         public IActionResult Update(Car car)
         {
@@ -112,6 +106,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
 
         }
+
         [HttpPost("delete")]
         public IActionResult Delete(Car car)
         {
@@ -122,6 +117,12 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
 
+        }
+        [HttpGet("getcardetailbyid")]
+        public IActionResult GetCarDetailById(int id)
+        {
+            var result = _carService.GetCarDetailById(id);
+            return StatusCode(result.Success ? 200 : 400, result);
         }
 
     }

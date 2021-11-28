@@ -42,10 +42,7 @@ namespace Business.Concrete
             }
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(),CarMessages.CarListed);
         }
-        public IDataResult<List<Car>> GetByDailyPrice(decimal min, decimal max)
-        {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.DailyPrice >= min && c.DailyPrice <= max));
-        }
+        
         [CacheAspect]
         public IDataResult<List<CarDetailDto>> GetCarDetails()
         {
@@ -61,6 +58,7 @@ namespace Business.Concrete
         [CacheRemoveAspect("ICarService.Get")]
         [SecuredOperation("car.add,admin")]
         [ValidationAspect(typeof(CarValidator))]
+
         public IResult Add(Car car)
         {
             //BUSINESS CODE
@@ -75,21 +73,14 @@ namespace Business.Concrete
             _carDal.Add(car);
             return new SuccessResult(CarMessages.CarAdded);
         }
+        [CacheRemoveAspect("ICarService.Get")]
         public IResult Delete(Car car)
         {
             _carDal.Delete(car);
             return new SuccessResult(CarMessages.CarDeleted);
         }
 
-        public IDataResult<CarDetailDto> GetDetailByCarId(int id)
-        {
-            var result = _carDal.Get(c => c.CarId == id);
-            if (result==null)
-            {
-                return new ErrorDataResult<CarDetailDto>();
-            }
-            return new SuccessDataResult<CarDetailDto>(_carDal.GetDetailByCarId(id));
-        }
+        
 
         [TransactionScopeAspect]
         public IResult TransactionalOperation(Car car)
@@ -99,7 +90,7 @@ namespace Business.Concrete
             return new SuccessResult(CarMessages.CarUpdate);
 
         }
-        [CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("ICarService.Get")]
         [ValidationAspect(typeof(CarValidator))]
         public IResult Update(Car car)
         {
@@ -157,6 +148,17 @@ namespace Business.Concrete
         public IDataResult<List<Car>> GetAllByColorId(int colorId)
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.ColorId == colorId));
+        }
+
+        
+        public IDataResult<CarDetailDto> GetCarDetailById(int id)
+        {
+            var result = _carDal.Get(c => c.CarId == id);
+            if (result == null)
+            {
+                return new ErrorDataResult<CarDetailDto>();
+            }
+            return new SuccessDataResult<CarDetailDto>(_carDal.GetCarDetailById(id));
         }
     }
 }

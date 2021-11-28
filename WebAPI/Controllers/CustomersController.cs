@@ -77,26 +77,6 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
-        [HttpGet("getcustomerdetails")]
-        public IActionResult GetCustomer()
-        {
-            var result = _customerService.GetCustomerDetails();
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
-        }
-        [HttpGet("getbyuserid")]
-        public IActionResult GetByUserId(int userId)
-        {
-            var result = _customerService.GetCustomerByUserId(userId);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
+        
     }
 }

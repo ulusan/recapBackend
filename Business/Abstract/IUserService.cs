@@ -19,7 +19,7 @@ namespace Business.Abstract
         IDataResult<List<User>> GetById(int id);
         IDataResult<List<OperationClaim>> GetUserClaims(User user);
         IDataResult<List<OperationClaim>> GetClaimsById(int userId);
-
+        IDataResult<User> GetByEmail(string email);
         IResult TransactionalOperation(User user);
 
         

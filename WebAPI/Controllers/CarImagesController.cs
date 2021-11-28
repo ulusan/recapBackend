@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Entities.DTOs;
 
 namespace WebAPI.Controllers
 {
@@ -21,9 +22,9 @@ namespace WebAPI.Controllers
         }
         //resim ekle
         [HttpPost("add")]
-        public IActionResult Add([FromForm(Name = ("Image"))] IFormFile file, [FromForm] CarImage images)
+        public IActionResult Add([FromForm] CarImageForAddDto carImageForAddDto)
         {
-            var result = _carImageService.Add(file, images);
+            var result = _carImageService.Add(carImageForAddDto);
             if (result.Success)
             {
                 return Ok(result);
@@ -32,12 +33,10 @@ namespace WebAPI.Controllers
         }
         //resim sil
         [HttpPost("delete")]
-        public IActionResult Delete([FromForm(Name = ("Id"))] int Id)
+        public IActionResult Delete(int id)
         {
 
-            var carImage = _carImageService.Get(Id).Data;
-
-            var result = _carImageService.Delete(carImage);
+            var result = _carImageService.Delete(id);
             if (result.Success)
             {
                 return Ok(result);
@@ -46,10 +45,10 @@ namespace WebAPI.Controllers
         }
         //resim güncelle
         [HttpPost("update")]
-        public IActionResult Update([FromForm(Name = ("Image"))] IFormFile file, [FromForm(Name = ("Id"))] int Id)
+        public IActionResult Update(CarImageForUpdateDto carImageForUpdateDto)
         {
-            var carImage = _carImageService.Get(Id).Data;
-            var result = _carImageService.Update(file, carImage);
+
+            var result = _carImageService.Update(carImageForUpdateDto);
             if (result.Success)
             {
                 return Ok(result);
@@ -60,7 +59,7 @@ namespace WebAPI.Controllers
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
-            //Thread.Sleep(1000);
+            
             var result = _carImageService.GetAll();
             if (result.Success)
             {
@@ -69,10 +68,10 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
         //resimlerin car-id lerini getir
-        [HttpGet("getbycarid")]
-        public IActionResult GetByCarId(int carId)
+        [HttpGet("getallbycarid")]
+        public IActionResult GetAllByCarId(int carId)
         {
-            var result = _carImageService.GetByCarId(carId);
+            var result = _carImageService.GetAllByCarId(carId);
             if (result.Success)
             {
                 return Ok(result);
